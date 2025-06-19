@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Hyperion</title>
+
+    <link href="../../../server/HyperionServer/public/Library/bootstrap-5.3.5-dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../Styles%20/Signin.css">
+</head>
+<body>
+
+<div id="successToast" class="toast-notification">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    Sign in successful! Redirecting...
+</div>
+
+<div class="signin-container">
+    <div class="row g-0 vh-100">
+        <div class="col-lg-6 branding-panel d-none d-lg-flex">
+            <div class="branding-content">
+                <a href="../index.html" class="nav-logo">Hyperion</a>
+                <h2 class="mt-4">Your Gateway to Unforgettable Experiences.</h2>
+                <p class="mt-3">Join thousands of event organizers and attendees who trust Hyperion for a seamless booking process.</p>
+
+            </div>
+        </div>
+
+        <div class="col-lg-6 form-panel">
+            <div class="form-content">
+                <a href="../index.html" class="nav-logo d-lg-none mb-5">Hyperion</a>
+                <h1 class="form-title">Welcome Back</h1>
+                <p class="form-subtitle">Sign in to access your account and events.</p>
+
+                <form id="signInForm">
+
+                    <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" required>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                        </div>
+                        <a href="ForgotPassword.html" class="forgot-password-link">Forgot password?</a>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">Sign In</button>
+                </form>
+
+                <p class="mt-4 text-center">
+                    Don't have an account? <a href="SignUp.html" class="signup-link">Sign Up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../server/HyperionServer/public/Library/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const signInForm = document.getElementById('signInForm');
+        const notification = document.getElementById('notification');
+
+        signInForm.addEventListener('submit', function(event) {
+
+            event.preventDefault();
+
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            })
+                .then(response => {
+
+                    if (!response.ok) {
+
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.error || 'Invalid credentials.');
+                        });
+                    }
+
+                    return response.json();
+                })
+                .then(data => {
+
+                    localStorage.setItem('jwt_token', data.access_token);
+                    localStorage.setItem('user_name', data.user.name);
+
+                    showNotification('Login Successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'HomePage.html';
+                    }, 1500);
+                })
+                .catch(error => {
+                    showNotification(error.message, 'error');
+                });
+        });
+
+
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(type, 'show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    });
+</script>
+</body>
+</html>

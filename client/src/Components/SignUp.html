@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Hyperion</title>
+
+  <link href="../../../server/HyperionServer/public/Library/bootstrap-5.3.5-dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../Styles%20/Signup.css">
+</head>
+<body>
+
+<div class="signin-container">
+  <div class="row g-0 vh-100">
+    <div class="col-lg-6 branding-panel d-none d-lg-flex">
+      <div class="branding-content">
+        <a href="../index.html" class="nav-logo">Hyperion</a>
+        <h2 class="mt-4">The Platform for Premier Events.</h2>
+        <p class="mt-3">Join a community of creators and enthusiasts. Sign up to host your own events or discover your next great experience.</p>
+      </div>
+    </div>
+
+    <div class="col-lg-6 form-panel">
+      <div class="form-content">
+        <a href="../index.html" class="nav-logo d-lg-none mb-5">Hyperion</a>
+        <h1 class="form-title">Create Your Account</h1>
+        <p class="form-subtitle">Get started in just a few clicks.</p>
+
+        <form>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstName" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="lastName" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" required>
+          </div>
+          <div class="mb-4">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" required>
+          </div>
+          <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" value="" id="termsCheck" required>
+            <label class="form-check-label" for="termsCheck">
+              I agree to the <a href="TermsAndConditions.html" class="signup-link">Terms & Conditions</a>
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 btn-lg">Create Account</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../../server/HyperionServer/public/Library/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

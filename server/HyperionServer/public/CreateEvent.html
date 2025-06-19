@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Event - Hyperion</title>
+    <link href="Library/bootstrap-5.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="CreateEvent.css">
+</head>
+<body>
+
+<div id="notification" class="notification"></div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand nav-logo" href="HomePage.html">Hyperion</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="DiscoverEvents.html">Explore Events</a></li>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Create Event</a></li>
+            </ul>
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img id="navbar-profile-img" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User" width="32" height="32" class="rounded-circle me-2">
+                    <strong id="navbar-user-name">User</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="AccountHome.html">Dashboard</a></li>
+                    <li><a class="dropdown-item" href="AccountMyEvents.html">My Events</a></li>
+                    <li><a class="dropdown-item" href="AccountBookings.html">My Bookings</a></li>
+                    <li><a class="dropdown-item" href="AccountProfile.html">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item logout-trigger" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid" style="padding-top: 56px;">
+    <div class="row">
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Create New Event</h1>
+            </div>
+
+            <form id="create-event-form" novalidate>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Event Details</h4>
+                        <p class="card-subtitle mb-4">Start with the basics. What is your event about?</p>
+                        <div class="mb-3">
+                            <label for="eventName" class="form-label">Event Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="eventName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventDescription" class="form-label">Event Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="eventDescription" rows="4" required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Event Image</h4>
+                        <p class="card-subtitle mb-4">Upload an image that represents your event.</p>
+                        <div id="imageUploadBox" class="image-upload-box text-center">
+                            <div class="upload-content">
+                                <i class="bi bi-cloud-arrow-up-fill"></i>
+                                <p class="fw-bold mt-2">Drag & drop a file or click to upload</p>
+                                <p class="text-muted small">PNG, JPG, or GIF up to 10MB</p>
+                            </div>
+                            <input type="file" id="eventImage" accept="image/png, image/jpeg, image/gif" hidden>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Location</h4>
+                        <p class="card-subtitle mb-4">Where will your event be held?</p>
+                        <div class="mb-3">
+                            <label for="eventVenue" class="form-label">Venue / Place Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="eventVenue" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventLocation" class="form-label">Address / City <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="eventLocation" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Date & Time</h4>
+                        <p class="card-subtitle mb-4">When is your event taking place?</p>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="eventDate" class="form-label">Event Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="eventDate" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="eventTime" class="form-label">Event Time <span class="text-danger">*</span></label>
+                                <input type="time" class="form-control" id="eventTime" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Tickets</h4>
+                        <p class="card-subtitle mb-4">Set a price for your tickets.</p>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">FCFA</span>
+                            <input type="number" class="form-control" placeholder="0.00" id="eventPrice" min="0" required>
+                            <div class="input-group-text">
+                                <input class="form-check-input mt-0" type="checkbox" id="isFreeEvent">
+                                <label class="form-check-label ms-2" for="isFreeEvent">This is a free event</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" id="publishButton" class="btn btn-primary btn-lg">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        Publish Event
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+
+<script src="Library/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const token = localStorage.getItem('jwt_token');
+        if (!token) {
+            window.location.href = 'SignIn.html';
+            return;
+        }
+
+        const userName = localStorage.getItem('user_name');
+        const userProfileImgUrl = localStorage.getItem('user_profile_image_url');
+        const navbarUserName = document.getElementById('navbar-user-name');
+        const navbarProfileImg = document.getElementById('navbar-profile-img');
+
+        if (navbarUserName && userName) {
+            navbarUserName.textContent = userName;
+        }
+        if (navbarProfileImg && userProfileImgUrl) {
+            navbarProfileImg.src = userProfileImgUrl;
+        }
+
+
+        const userId = localStorage.getItem('user_id');
+        if (!userId) {
+            alert("User ID not found. Please sign in again.");
+            localStorage.clear();
+            window.location.href = 'SignIn.html';
+            return;
+        }
+
+
+        const createEventForm = document.getElementById('create-event-form');
+        const publishButton = document.getElementById('publishButton');
+        const notification = document.getElementById('notification');
+        const imageUploadBox = document.getElementById('imageUploadBox');
+        const eventImageInput = document.getElementById('eventImage');
+        const isFreeCheckbox = document.getElementById('isFreeEvent');
+        const eventPriceInput = document.getElementById('eventPrice');
+
+        let selectedFile = null;
+        let isSubmitting = false;
+
+
+        function showNotification(message, type = 'error') {
+            notification.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(type, 'show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+
+        function handleFile(file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                showNotification('Invalid file type. Please upload an image.');
+                return;
+            }
+            selectedFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imageUploadBox.style.backgroundImage = `url('${e.target.result}')`;
+                imageUploadBox.classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        imageUploadBox.addEventListener('click', () => eventImageInput.click());
+        imageUploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            imageUploadBox.classList.add('dragover');
+        });
+        imageUploadBox.addEventListener('dragleave', () => imageUploadBox.classList.remove('dragover'));
+        imageUploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            imageUploadBox.classList.remove('dragover');
+            handleFile(e.dataTransfer.files[0]);
+        });
+        eventImageInput.addEventListener('change', () => handleFile(eventImageInput.files[0]));
+
+
+
+        isFreeCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                eventPriceInput.value = '0';
+                eventPriceInput.disabled = true;
+            } else {
+                eventPriceInput.disabled = false;
+            }
+        });
+
+
+
+        const apiFetch = async (url, options = {}) => {
+            const headers = { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` };
+            if (!(options.body instanceof FormData)) {
+                headers['Content-Type'] = 'application/json';
+            }
+
+            const response = await fetch(url, { ...options, headers });
+
+            if (response.status === 401) {
+                localStorage.clear();
+                window.location.href = 'SignIn.html';
+                throw new Error('Authentication failed.');
+            }
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw errorData;
+            }
+            if (response.status === 204) return null;
+            return response.json();
+        };
+
+        createEventForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (isSubmitting) return;
+
+            const spinner = publishButton.querySelector('.spinner-border');
+            spinner.classList.remove('d-none');
+            publishButton.disabled = true;
+
+            const eventData = {
+                event_name: document.getElementById('eventName').value,
+                event_desc: document.getElementById('eventDescription').value,
+                event_date: document.getElementById('eventDate').value,
+                event_time: document.getElementById('eventTime').value,
+                event_venue: document.getElementById('eventVenue').value,
+                event_location: document.getElementById('eventLocation').value,
+                event_price: document.getElementById('eventPrice').value,
+                event_status: 'Waiting',
+                fk_user_id: userId
+            };
+
+            try {
+                const createdEvent = await apiFetch('/event', {
+                    method: 'POST',
+                    body: JSON.stringify(eventData)
+                });
+                showNotification('Event details saved...', 'info');
+
+                if (selectedFile && createdEvent && createdEvent.event_id) {
+                    const formData = new FormData();
+                    formData.append('image', selectedFile);
+
+                    await apiFetch(`/event/${createdEvent.event_id}/image`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                }
+
+                showNotification('Event published successfully!', 'success');
+                setTimeout(() => {
+                    window.location.href = `EventDetails.html?id=${createdEvent.event_id}`;
+                }, 1500);
+
+            } catch (error) {
+                console.error('Failed to create event:', error);
+                let errorMessage = 'An unknown error occurred.';
+                if (error.errors) {
+                    errorMessage = Object.values(error.errors).flat().join(' ');
+                }
+                showNotification(errorMessage, 'error');
+
+            } finally {
+                spinner.classList.add('d-none');
+                publishButton.disabled = false;
+                isSubmitting = false;
+            }
+        });
+
+        document.querySelectorAll('.logout-trigger').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                apiFetch('/logout', { method: 'POST' }).then(() => {
+                    localStorage.clear();
+                    window.location.href = 'SignIn.html';
+                });
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

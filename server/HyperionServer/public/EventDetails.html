@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details - Hyperion</title>
+
+    <link href="Library/bootstrap-5.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="EventDetails.css">
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand nav-logo" href="HomePage.html">Hyperion</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="DiscoverEvents.html">Explore Events</a></li>
+                <li class="nav-item"><a class="nav-link" href="CreateEvent.html">Create Event</a></li>
+            </ul>
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img id="navbar-profile-img" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User" width="32" height="32" class="rounded-circle me-2">
+                    <strong id="navbar-user-name">User</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="AccountHome.html">Dashboard</a></li>
+                    <li><a class="dropdown-item" href="AccountMyEvents.html">My Events</a></li>
+                    <li><a class="dropdown-item" href="AccountBookings.html">My Bookings</a></li>
+                    <li><a class="dropdown-item" href="AccountProfile.html">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item logout-trigger" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<div id="notification-container" class="notification-container"></div>
+
+<main class="container py-5 mt-5">
+    <div class="row g-5">
+        <div class="col-lg-8" id="event-details-content">
+
+        </div>
+        <div class="col-lg-4">
+            <div class="action-panel">
+                <div id="ticket-action-panel" class="card shadow-sm"></div>
+                <div id="cart-summary" class="card shadow-sm mt-4"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="checkoutModalLabel">Confirm Your Purchase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Please select a payment method to complete your purchase.</p>
+                <div id="checkout-card-list">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirm-purchase-btn" disabled>
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    Confirm Purchase
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="Library/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const token = localStorage.getItem('jwt_token');
+        const userId = localStorage.getItem('user_id');
+
+        if (!token || !userId) {
+            window.location.href = 'SignIn.html';
+            return;
+        }
+
+        const navbarUserName = document.getElementById('navbar-user-name');
+        const navbarProfileImg = document.getElementById('navbar-profile-img');
+        const eventDetailsContainer = document.getElementById('event-details-content');
+        const ticketActionPanel = document.getElementById('ticket-action-panel');
+        const cartSummaryContainer = document.getElementById('cart-summary');
+        const notificationContainer = document.getElementById('notification-container');
+        const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+        const checkoutCardList = document.getElementById('checkout-card-list');
+        const confirmPurchaseBtn = document.getElementById('confirm-purchase-btn');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('id');
+
+        if (!eventId) {
+            eventDetailsContainer.innerHTML = '<h1>Event not found.</h1>';
+            return;
+        }
+
+        const apiFetch = async (url, options = {}) => {
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            if (response.status === 401) {
+                localStorage.clear();
+                window.location.href = 'SignIn.html';
+                throw new Error('Authentication error');
+            }
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.message || `API Error: ${response.status}`);
+            }
+            return data;
+        };
+
+        function showNotification(message, type = 'success') {
+            const toastId = 'toast-' + Date.now();
+            const toastIcon = type === 'success'
+                ? '<i class="bi bi-check-circle-fill me-2"></i>'
+                : '<i class="bi bi-exclamation-triangle-fill me-2"></i>';
+            const toastThemeClass = type === 'success' ? 'bg-success-themed' : 'bg-danger-themed';
+
+            const toastHtml = `
+                <div id="${toastId}" class="toast toast-hyperion ${toastThemeClass}" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        ${toastIcon}
+                        <strong class="me-auto">Notification</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">${message}</div>
+                </div>`;
+
+            notificationContainer.insertAdjacentHTML('beforeend', toastHtml);
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement, { delay: 5000 });
+            toast.show();
+            toastElement.addEventListener('hidden.bs.toast', () => toastElement.remove());
+        }
+
+        function displayEventDetails(event) {
+            document.title = `${event.event_name} - Hyperion`;
+            const organizerName = event.user ? event.user.name : 'Hyperion';
+            const imageUrl = (event.images && event.images.length > 0) ? `http://localhost:8000/storage/${event.images[0].image_url}` : 'https://placehold.co/800x400/34495E/FFFFFF?text=Event+Image';
+
+            eventDetailsContainer.innerHTML = `
+        <div class="event-image-wrapper mb-4"><img src="${imageUrl}" class="event-banner-image" alt="${event.event_name}"></div>
+        <div class="event-header mb-4"><h1 class="display-5 fw-bold">${event.event_name}</h1><p class="lead text-muted">Organized by ${organizerName}</p></div><hr class="my-4">
+        <div class="event-info-section"><h4 class="section-title">Date and Time</h4><p><i class="bi bi-calendar-event me-2"></i>${new Date(event.event_date).toDateString()}</p><p><i class="bi bi-clock me-2"></i>${event.event_time}</p></div><hr class="my-4">
+        <div class="event-info-section"><h4 class="section-title">Location</h4><p><i class="bi bi-geo-alt-fill me-2"></i>${event.event_venue}, ${event.event_location}</p></div><hr class="my-4">
+        <div class="event-info-section"><h4 class="section-title">About this Event</h4><p>${event.event_desc}</p></div>`;
+        }
+
+        function displayTicketAction(event) {
+            ticketActionPanel.innerHTML = `
+        <div class="card-body text-center">
+            <h5 class="card-title">Ticket Price</h5>
+            <p class="display-6 fw-bold my-3">${Number(event.event_price) > 0 ? Number(event.event_price).toLocaleString('fr-FR') + ' FCFA' : 'Free'}</p>
+            <button id="addToCartBtn" class="btn btn-primary w-100 btn-lg">Add to Cart</button>
+        </div>`;
+            document.getElementById('addToCartBtn').addEventListener('click', () => handleAddToCart(event));
+        }
+        function updateCartDisplay(cart) {
+            let itemsHtml = '<p class="text-muted text-center my-3">Your cart is empty.</p>';
+            if (cart && cart.events && cart.events.length > 0) {
+                itemsHtml = cart.events.map(item => `
+                    <div class="cart-item d-flex justify-content-between align-items-center mb-2">
+                        <div><div class="fw-bold">${item.event_name}</div><div class="text-muted small">${Number(item.event_price).toLocaleString('fr-FR')} FCFA</div></div>
+                        <button class="btn btn-sm btn-outline-danger remove-item-btn" data-id="${item.event_id}" title="Remove item">&times;</button>
+                    </div>`).join('');
+            }
+            cartSummaryContainer.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Your Cart</h5><div id="cart-items">${itemsHtml}</div><hr>
+                    <div class="d-flex justify-content-between fw-bold mt-2"><span>Total</span><span>${Number(cart.cart_total_price || 0).toLocaleString('fr-FR')} FCFA</span></div>
+                    <button id="checkout-btn" class="btn btn-accent w-100 mt-3" ${(!cart || !cart.events || cart.events.length === 0) ? 'disabled' : ''}>Proceed to Checkout</button>
+                </div>`;
+            document.querySelectorAll('.remove-item-btn').forEach(b => b.addEventListener('click', (e) => handleRemoveFromCart(e.target.dataset.id)));
+            const checkoutBtn = document.getElementById('checkout-btn');
+            if (checkoutBtn) checkoutBtn.addEventListener('click', handleCheckout);
+        }
+
+        async function handleAddToCart(event) {
+            try {
+                const updatedCart = await apiFetch(`/cart/events/${event.event_id}`, { method: 'POST' });
+                updateCartDisplay(updatedCart);
+                showNotification(`"${event.event_name}" added to cart!`, 'success');
+            } catch (error) {
+                showNotification(error.message || 'Could not add item to cart.', 'error');
+            }
+        }
+        async function handleRemoveFromCart(eventId) {
+            try {
+                const updatedCart = await apiFetch(`/cart/events/${eventId}`, { method: 'DELETE' });
+                updateCartDisplay(updatedCart);
+            } catch (error) {
+                showNotification('Could not remove item from cart.', 'error');
+            }
+        }
+
+
+        async function handleCheckout() {
+            checkoutCardList.innerHTML = `<div class="text-center my-3"><div class="spinner-border spinner-border-sm" role="status"></div><span class="ms-2">Loading your cards...</span></div>`;
+            confirmPurchaseBtn.disabled = true;
+            checkoutModal.show();
+            try {
+                const userCards = await apiFetch(`/user/${userId}/cards`);
+                if (userCards.length === 0) {
+                    checkoutCardList.innerHTML = `<div class="alert alert-warning">You have no saved payment methods. Please <a href="AccountPaymentMethods.html">add a card</a> to your profile first.</div>`;
+                    return;
+                }
+                checkoutCardList.innerHTML = userCards.map((card, index) => `
+                    <div class="form-check payment-method-option p-3 border-bottom">
+                      <input class="form-check-input" type="radio" name="paymentCard" id="card-${card.bank_card_id}" value="${card.bank_card_id}" ${index === 0 ? 'checked' : ''}>
+                      <label class="form-check-label w-100" for="card-${card.bank_card_id}">
+                        <strong>${card.bank_provider}</strong> ending in ...${String(card.bank_card_number).slice(-4)}
+                      </label>
+                    </div>`).join('');
+                confirmPurchaseBtn.disabled = false;
+            } catch (error) {
+                checkoutCardList.innerHTML = `<div class="alert alert-danger">Could not load your payment methods.</div>`;
+            }
+        }
+
+
+        async function confirmPurchase() {
+            const selectedCard = document.querySelector('input[name="paymentCard"]:checked');
+            if (!selectedCard) {
+                showNotification('Please select a payment method.', 'danger');
+                return;
+            }
+
+            const spinner = document.getElementById('confirm-purchase-btn').querySelector('.spinner-border');
+            spinner.classList.remove('d-none');
+            document.getElementById('confirm-purchase-btn').disabled = true;
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                const response = await apiFetch('/checkout', { method: 'POST' });
+
+                checkoutModal.hide();
+                showNotification(response.message, 'success');
+                initializePage();
+
+            } catch (error) {
+                showNotification(`Checkout failed: ${error.message}`, 'danger');
+            } finally {
+                spinner.classList.add('d-none');
+                document.getElementById('confirm-purchase-btn').disabled = false;
+            }
+        }
+
+        async function initializePage() {
+            try {
+                const user = await apiFetch(`/user/${userId}`);
+                navbarUserName.textContent = user.name;
+                localStorage.setItem('user_name', user.name);
+                if (user.profile_image_url) {
+                    const fullUrl = `http://localhost:8000/storage/${user.profile_image_url}`;
+                    navbarProfileImg.src = fullUrl;
+                    localStorage.setItem('user_profile_image_url', fullUrl);
+                }
+                const [event, cart] = await Promise.all([apiFetch(`/event/${eventId}`), apiFetch('/cart')]);
+                displayEventDetails(event);
+                displayTicketAction(event);
+                updateCartDisplay(cart);
+            } catch (error) {
+                console.error('Failed to initialize page:', error);
+                eventDetailsContainer.innerHTML = `<div class="alert alert-danger"><h1>Error</h1><p>${error.message}</p></div>`;
+            }
+        }
+
+        document.querySelectorAll('.logout-trigger').forEach(b => b.addEventListener('click', e => {
+            e.preventDefault();
+            apiFetch('/logout', {method: 'POST'}).then(() => {
+                localStorage.clear();
+                window.location.href = 'SignIn.html';
+            })
+        }));
+        confirmPurchaseBtn.addEventListener('click', confirmPurchase);
+
+        initializePage();
+    });
+</script>
+
+</body>
+</html>

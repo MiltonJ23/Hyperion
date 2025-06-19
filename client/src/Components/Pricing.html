@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing - Hyperion</title>
+
+  <link href="../../../server/HyperionServer/public/Library/bootstrap-5.3.5-dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../Styles%20/Pricing.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <div class="container">
+    <a class="navbar-brand nav-logo" href="../index.html">Hyperion</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#">Features</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Pricing</a></li>
+        <li class="nav-item"><a class="nav-link" href="Contact.html">Contact</a></li>
+      </ul>
+      <div class="d-flex align-items-center ms-lg-3 mt-3 mt-lg-0">
+        <a href="SignIn.html" class="btn btn-outline-accent me-2">Sign In</a>
+        <a href="SignUp.html" class="btn btn-accent">Sign Up</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="pricing-hero text-center">
+    <div class="container">
+      <h1 class="display-4">Simple, Transparent Pricing</h1>
+      <p class="lead">Focus on creating amazing events. We'll handle the rest with a clear, fair fee structure. No surprises.</p>
+      <div class="pricing-box-container mt-5">
+        <div class="pricing-box">
+          <h3>Pay-As-You-Go</h3>
+          <div class="price">150 FCFA <span class="plus">+</span> 2.5%</div>
+          <p class="per-ticket">per ticket sold</p>
+        </div>
+        <div class="pricing-box free-box">
+          <h3>Free Events</h3>
+          <div class="price">Completely Free</div>
+          <p class="per-ticket">Always free for free events</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculator-section">
+    <div class="container">
+      <h2 class="text-center mb-4">Estimate Your Revenue</h2>
+      <div class="calculator-wrapper">
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="calculator-inputs">
+              <div class="mb-3">
+                <label for="ticketPrice" class="form-label">Ticket Price (FCFA)</label>
+                <input type="number" class="form-control form-control-lg" id="ticketPrice" value="5000">
+              </div>
+              <div class="mb-3">
+                <label for="ticketCount" class="form-label">Number of Tickets</label>
+                <input type="number" class="form-control form-control-lg" id="ticketCount" value="100">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Who pays the fee?</label>
+                <select class="form-select form-select-lg" id="feePayer">
+                  <option value="pass" selected>Pass fee to attendees</option>
+                  <option value="absorb">Absorb fee myself</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="results-display">
+              <div class="result-item">
+                <span class="label">Total ticket revenue</span>
+                <span class="value" id="totalRevenue">500,000 FCFA</span>
+              </div>
+              <div class="result-item fee">
+                <span class="label">Hyperion fee</span>
+                <span class="value" id="hyperionFee">- 27,500 FCFA</span>
+              </div>
+              <div class="result-item total">
+                <span class="label">Your estimated payout</span>
+                <span class="value" id="yourPayout">472,500 FCFA</span>
+              </div>
+              <hr>
+              <div class="result-item attendee-price">
+                <span class="label">Price attendee pays</span>
+                <span class="value" id="attendeePays">5,275 FCFA</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-section bg-light">
+    <div class="container">
+      <h2 class="text-center">All Plans Include These Core Features</h2>
+      <div class="row mt-5 g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="d-flex align-items-start">
+            <i class="bi bi-calendar-check-fill me-3"></i>
+            <p>Unlimited events and ticket types</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="d-flex align-items-start">
+            <i class="bi bi-bar-chart-line-fill me-3"></i>
+            <p>Real-time sales analytics</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="d-flex align-items-start">
+            <i class="bi bi-people-fill me-3"></i>
+            <p>Customizable attendee registration forms</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="d-flex align-items-start">
+            <i class="bi bi-envelope-paper-fill me-3"></i>
+            <p>Email marketing & invitation tools</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="d-flex align-items-start">
+            <i class="bi bi-credit-card-2-front-fill me-3"></i>
+            <p>Secure payment processing</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="d-flex align-items-start">
+            <i class="bi bi-headset me-3"></i>
+            <p>Dedicated customer support</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <div class="container">
+      <h2 class="text-center">Frequently Asked Questions</h2>
+      <div class="accordion mt-5" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+              Is it really free to host a free event?
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              **Yes, absolutely.** If you are not charging for your tickets, we will not charge you anything. It's that simple. You get access to all our core features to manage your free event.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+              How and when do I get paid?
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Payouts from ticket sales are processed securely and transferred to your designated bank or mobile money account within 3-5 business days after your event has concluded.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+              Can I pass the ticketing fee on to my attendees?
+            </button>
+          </h2>
+          <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Yes. By default, you have the option to either absorb the fee yourself or pass it on to your customers. Our fee calculator above lets you see the difference in real-time.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer-section text-center">
+  <div class="container">
+    <div class="footer-content">
+      <h3>Hyperion</h3>
+      <p>Your gateway to unforgettable experiences.</p>
+      <div class="social-links">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; Zingui Fred Mike Spring 2025 Hyperion. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../server/HyperionServer/public/Library/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ticketPriceInput = document.getElementById('ticketPrice');
+    const ticketCountInput = document.getElementById('ticketCount');
+    const feePayerSelect = document.getElementById('feePayer');
+
+    const totalRevenueEl = document.getElementById('totalRevenue');
+    const hyperionFeeEl = document.getElementById('hyperionFee');
+    const yourPayoutEl = document.getElementById('yourPayout');
+    const attendeePaysEl = document.getElementById('attendeePays');
+
+    const baseFee = 150;
+    const percentageFee = 0.025;
+
+    function calculateFees() {
+      const price = parseFloat(ticketPriceInput.value) || 0;
+      const count = parseInt(ticketCountInput.value) || 0;
+      const feePayer = feePayerSelect.value;
+
+      if (price === 0 || count === 0) {
+        totalRevenueEl.innerText = '0 FCFA';
+        hyperionFeeEl.innerText = '- 0 FCFA';
+        yourPayoutEl.innerText = '0 FCFA';
+        attendeePaysEl.innerText = '0 FCFA';
+        return;
+      }
+
+      const feePerTicket = baseFee + (price * percentageFee);
+      const totalFee = feePerTicket * count;
+      const totalTicketRevenue = price * count;
+
+      let yourPayout, attendeePaysTotal, displayedFee;
+
+      if (feePayer === 'absorb') {
+        yourPayout = totalTicketRevenue - totalFee;
+        attendeePaysTotal = totalTicketRevenue;
+        displayedFee = `- ${totalFee.toLocaleString('fr-FR')} FCFA`;
+      } else {
+        yourPayout = totalTicketRevenue;
+        attendeePaysTotal = totalTicketRevenue + totalFee;
+        displayedFee = `+ ${totalFee.toLocaleString('fr-FR')} FCFA (Paid by attendee)`;
+      }
+
+      const singleAttendeePrice = attendeePaysTotal / count;
+
+      totalRevenueEl.innerText = `${totalTicketRevenue.toLocaleString('fr-FR')} FCFA`;
+      hyperionFeeEl.innerText = displayedFee;
+      yourPayoutEl.innerText = `${yourPayout.toLocaleString('fr-FR')} FCFA`;
+      attendeePaysEl.innerText = `${singleAttendeePrice.toLocaleString('fr-FR')} FCFA`;
+    }
+
+
+    [ticketPriceInput, ticketCountInput, feePayerSelect].forEach(el => {
+      el.addEventListener('input', calculateFees);
+    });
+
+
+    calculateFees();
+  });
+</script>
+</body>
+</html>

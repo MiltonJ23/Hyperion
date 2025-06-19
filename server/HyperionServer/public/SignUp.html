@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Hyperion</title>
+
+    <link href="Library/bootstrap-5.3.5-dist/css/bootstrap.min.css" rel="stylesheet"  crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Signup.css">
+</head>
+<body>
+
+<div id="notification" class="notification"></div>
+
+<div class="signin-container">
+    <div class="row g-0 vh-100">
+        <div class="col-lg-6 branding-panel d-none d-lg-flex">
+            <div class="branding-content">
+                <a href="index.html" class="nav-logo">Hyperion</a>
+                <h2 class="mt-4">The Platform for Premier Events.</h2>
+                <p class="mt-3">Join a community of creators and enthusiasts. Sign up to host your own events or discover your next great experience.</p>
+            </div>
+        </div>
+
+        <div class="col-lg-6 form-panel">
+            <div class="form-content">
+                <a href="index.html" class="nav-logo d-lg-none mb-5">Hyperion</a>
+                <h1 class="form-title">Create Your Account</h1>
+                <p class="form-subtitle">Get started in just a few clicks.</p>
+
+                <form id="signUpForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" required autocomplete="new-password">
+                    </div>
+                    <div class="mb-4">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" required autocomplete="new-password">
+                    </div>
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" value="" id="termsCheck" required>
+                        <label class="form-check-label" for="termsCheck">
+                            I agree to the <a href="TermsAndConditions.html" class="signup-link">Terms & Conditions</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">Create Account</button>
+                </form>
+                <p class="mt-4 text-center">
+                    Already have an account? <a href="SignIn.html" class="signup-link">Sign In</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="Library/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const signUpForm = document.getElementById('signUpForm');
+        const notification = document.getElementById('notification');
+
+        signUpForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsCheck = document.getElementById('termsCheck').checked;
+
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match.', 'error');
+                return;
+            }
+            if (!termsCheck) {
+                showNotification('You must agree to the Terms & Conditions.', 'error');
+                return;
+            }
+
+
+            const userData = {
+                name: `${firstName} ${lastName}`,
+                email: email,
+                password: password,
+                password_confirmation: confirmPassword
+            };
+
+            fetch('/user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            if (errorData.errors) {
+                                const messages = Object.values(errorData.errors).flat();
+                                throw new Error(messages.join('<br>'));
+                            }
+                            throw new Error(errorData.message || 'An unknown error occurred.');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showNotification('Account created successfully! Please sign in.', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'SignIn.html';
+                    }, 2000);
+                })
+                .catch(error => {
+                    showNotification(error.message, 'error', true);
+                });
+        });
+
+        function showNotification(message, type, allowHtml = false) {
+            if (allowHtml) {
+                notification.innerHTML = message;
+            } else {
+                notification.textContent = message;
+            }
+            notification.className = 'notification';
+            notification.classList.add(type, 'show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+    });
+</script>
+
+</body>
+</html>

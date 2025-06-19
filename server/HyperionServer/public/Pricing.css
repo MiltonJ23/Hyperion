@@ -1,0 +1,237 @@
+
+:root {
+    --color-primary: #34495E; /* Slate Blue */
+    --color-secondary-blue: #7393B3; /* Fog Blue */
+    --color-accent: #F5F5DC; /* Warm Linen */
+    --color-background: #FFFFFF; /* Using white for a cleaner feel */
+    --color-light-bg: #FAFAFA; /* Alabaster */
+    --color-text-primary: #2C3E50; /* Gunmetal */
+    --color-text-secondary: #8D99AE; /* Sterling */
+    --color-white: #FFFFFF;
+}
+
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    padding-top: 70px;
+}
+
+h1, h2, h3, .nav-logo {
+    font-weight: 700;
+}
+
+p {
+    color: #555;
+}
+
+section {
+    padding: 5rem 0;
+}
+
+/* ==== Navbar Customization ==== */
+.navbar {
+    background-color: var(--color-primary) !important;
+}
+
+.nav-logo {
+    font-size: 1.8rem;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+}
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--color-white);
+}
+
+
+.btn-accent {
+    --bs-btn-bg: var(--color-accent);
+    --bs-btn-border-color: var(--color-accent);
+    --bs-btn-color: var(--color-text-primary);
+    --bs-btn-hover-bg: #E0DBC5; /* Darker Warm Linen */
+    --bs-btn-hover-border-color: #E0DBC5;
+    --bs-btn-hover-color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+
+.btn-outline-accent {
+    --bs-btn-color: var(--color-accent);
+    --bs-btn-border-color: var(--color-accent);
+    --bs-btn-hover-bg: var(--color-accent);
+    --bs-btn-hover-border-color: var(--color-accent);
+    --bs-btn-hover-color: var(--color-text-primary);
+    --bs-btn-active-bg: #E0DBC5;
+    --bs-btn-active-border-color: #E0DBC5;
+    --bs-btn-active-color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+/* ==== 1. Pricing Hero Section ==== */
+.pricing-hero {
+    background-color: var(--color-light-bg);
+    padding: 6rem 0;
+}
+.pricing-hero .lead {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--color-text-primary);
+}
+
+.pricing-box-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.pricing-box {
+    background-color: var(--color-white);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(44, 62, 80, 0.1);
+    border: 1px solid #eee;
+    min-width: 300px;
+}
+.pricing-box h3 {
+    color: var(--color-primary);
+}
+.pricing-box .price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0.5rem 0;
+}
+.pricing-box .price .plus {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+}
+.pricing-box .per-ticket {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+.free-box {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+.free-box h3, .free-box .price, .free-box .per-ticket {
+    color: var(--color-white);
+}
+
+/* ==== 2. Calculator Section ==== */
+.calculator-section {
+    background-color: var(--color-white);
+}
+.calculator-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+.calculator-inputs, .results-display {
+    background-color: var(--color-light-bg);
+    padding: 2rem;
+    border-radius: 10px;
+    height: 100%;
+}
+.results-display {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0;
+    font-size: 1.1rem;
+}
+.result-item .label {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+.results-display .label {
+    color: var(--color-secondary-blue);
+}
+.result-item.total {
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-top: 1px solid var(--color-secondary-blue);
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+}
+.result-item.total .label {
+    color: var(--color-white);
+}
+.results-display hr {
+    border-color: var(--color-secondary-blue);
+    opacity: 0.5;
+}
+.attendee-price .label {
+    color: var(--color-secondary-blue);
+}
+
+/* ==== 3. Features Section ==== */
+.features-section.bg-light {
+    background-color: var(--color-light-bg);
+}
+.features-section h2 {
+    color: var(--color-text-primary);
+}
+.features-section .bi {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+}
+.features-section p {
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+/* ==== 4. FAQ Section ==== */
+.accordion-item {
+    border-color: #e0e0e0;
+}
+.accordion-button {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+.accordion-button:not(.collapsed) {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(52, 73, 94, 0.25);
+}
+.accordion-button::after {
+    filter: brightness(0) invert(1);
+}
+
+/* ==== 5. Footer ==== */
+.footer-section {
+    background-color: var(--color-text-primary);
+    color: var(--color-background);
+    text-align: center;
+    padding: 4rem 0 2rem 0;
+}
+.footer-content p {
+    color: var(--color-text-secondary);
+}
+.social-links a {
+    color: var(--color-white);
+    text-decoration: none;
+    margin: 0 1rem;
+    font-weight: 600;
+}
+.social-links a:hover {
+    color: var(--color-accent);
+}
+.footer-bottom {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-primary);
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}

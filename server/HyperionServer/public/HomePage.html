@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Hyperion</title>
+
+    <link href="Library/bootstrap-5.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="HomePage.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand nav-logo" href="HomePage.html">Hyperion</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="DiscoverEvents.html">Explore Events</a></li>
+                <li class="nav-item"><a class="nav-link" href="CreateEvent.html">Create Event</a></li>
+            </ul>
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img id="navbar-profile-img" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User" width="32" height="32" class="rounded-circle me-2">
+                    <strong id="navbar-user-name">User</strong>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="AccountHome.html">Dashboard</a></li>
+                    <li><a class="dropdown-item" href="AccountMyEvents.html">My Events</a></li>
+                    <li><a class="dropdown-item" href="AccountBookings.html">My Bookings</a></li>
+                    <li><a class="dropdown-item" href="AccountProfile.html">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item logout-trigger" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<header class="page-header">
+    <div class="container text-center">
+        <h1 class="display-4">Discover Events For All The Things You Love</h1>
+        <form id="search-form" class="search-bar-wrapper mx-auto mt-4">
+            <input type="text" id="search-input" class="form-control form-control-lg" placeholder="Search for events by name...">
+            <button type="submit" class="btn btn-accent"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+</header>
+
+<main class="container py-5">
+    <div id="event-grid" class="row g-4">
+
+    </div>
+    <nav id="pagination-nav" class="mt-5 d-none justify-content-center"></nav>
+</main>
+
+<script src="Library/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const token = localStorage.getItem('jwt_token');
+        const userId = localStorage.getItem('user_id');
+
+        if (!token || !userId) {
+            window.location.href = 'SignIn.html';
+            return;
+        }
+
+        const navbarUserName = document.getElementById('navbar-user-name');
+        const navbarProfileImg = document.getElementById('navbar-profile-img');
+        const eventGrid = document.getElementById('event-grid');
+        const searchForm = document.getElementById('search-form');
+        const searchInput = document.getElementById('search-input');
+
+        let currentFilters = {};
+
+        const apiFetch = (url, options = {}) => {
+            return fetch(url, { ...options, headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` }})
+                .then(response => {
+                    if (response.status === 401) { localStorage.clear(); window.location.href = 'SignIn.html'; }
+                    if (!response.ok) throw new Error('Network error');
+                    return response.json();
+                });
+        };
+
+
+        const initializeUser = async () => {
+            // Set initial values from localStorage for instant display
+            navbarUserName.textContent = localStorage.getItem('user_name') || 'User';
+            const storedImg = localStorage.getItem('user_profile_image_url');
+            if(storedImg) navbarProfileImg.src = storedImg;
+
+            try {
+
+                const user = await apiFetch(`/user/${userId}`);
+                if (user) {
+                    // Update the navbar
+                    navbarUserName.textContent = user.name;
+                    if(user.profile_image_url) {
+                        const fullUrl = `http://localhost:8000/storage/${user.profile_image_url}`;
+                        navbarProfileImg.src = fullUrl;
+
+                        localStorage.setItem('user_profile_image_url', fullUrl);
+                    }
+
+                    localStorage.setItem('user_name', user.name);
+                }
+            } catch (error) {
+                console.error("Could not fetch user profile for navbar.", error);
+
+            }
+        };
+
+        const renderEvents = (data) => {
+            eventGrid.innerHTML = '';
+            if (!data || data.length === 0) {
+                eventGrid.innerHTML = '<div class="col-12"><p class="text-center">No events match your criteria.</p></div>';
+                return;
+            }
+            data.forEach(event => {
+                const imageUrl = (event.images && event.images.length > 0)
+                    ? `http://localhost:8000/storage/${event.images[0].image_url}`
+                    : 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2070';
+                const eventCard = `
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 event-card">
+                        <img src="${imageUrl}" class="card-img-top" alt="${event.event_name}">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${event.event_name}</h5>
+                            <p class="card-text text-muted flex-grow-1">${event.event_desc.substring(0, 100)}...</p>
+                            <p class="mb-1"><i class="bi bi-calendar-event me-2"></i><strong>Date:</strong> ${new Date(event.event_date).toLocaleDateString()}</p>
+                            <p class="mb-1"><i class="bi bi-geo-alt-fill me-2"></i><strong>Venue:</strong> ${event.event_venue}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <span class="fw-bold fs-5">${event.event_price > 0 ? Number(event.event_price).toLocaleString('fr-FR') + ' FCFA' : 'Free'}</span>
+                            <a href="EventDetails.html?id=${event.event_id}" class="btn btn-card-details">View Details</a>
+                        </div>
+                    </div>
+                </div>`;
+                eventGrid.innerHTML += eventCard;
+            });
+        };
+
+        const renderPagination = (paginationData) => {
+            const paginationNav = document.getElementById('pagination-nav');
+            paginationNav.innerHTML = '';
+            if (!paginationData || paginationData.last_page <= 1) {
+                paginationNav.classList.add('d-none');
+                return;
+            }
+            paginationNav.classList.remove('d-none');
+
+            const list = document.createElement('ul');
+            list.className = 'pagination';
+
+            paginationData.links.forEach(link => {
+                const li = document.createElement('li');
+                li.className = `page-item ${link.active ? 'active' : ''} ${!link.url ? 'disabled' : ''}`;
+                const a = document.createElement('a');
+                a.className = 'page-link';
+                a.href = link.url || '#';
+                a.innerHTML = link.label;
+                if(link.url) {
+                    a.addEventListener('click', e => { e.preventDefault(); loadEvents(link.url); });
+                }
+                li.appendChild(a);
+                list.appendChild(li);
+            });
+            paginationNav.appendChild(list);
+        };
+
+        const loadEvents = (url = null) => {
+            let apiUrl = url || `/event?${new URLSearchParams(currentFilters).toString()}`;
+            eventGrid.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+            apiFetch(apiUrl)
+                .then(response => {
+                    renderEvents(response.data);
+                    renderPagination(response);
+                })
+                .catch(error => {
+                    console.error('Error fetching events:', error);
+                    eventGrid.innerHTML = '<p class="text-center text-danger">Failed to load events.</p>';
+                });
+        };
+
+        searchForm.addEventListener('submit', e => {
+            e.preventDefault();
+            currentFilters.name = searchInput.value;
+            delete currentFilters.page;
+            loadEvents();
+        });
+
+        document.querySelectorAll('.logout-trigger').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                apiFetch('/logout', { method: 'POST' }).then(() => {
+                    localStorage.clear();
+                    window.location.href = 'SignIn.html';
+                });
+            });
+        });
+
+
+        initializeUser();
+        loadEvents();
+    });
+</script>
+</body>
+</html>

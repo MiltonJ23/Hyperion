@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Events - Hyperion</title>
+
+    <link href="Library/bootstrap-5.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="DiscoverEvent.css">
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand nav-logo" href="HomePage.html">Hyperion</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Explore Events</a></li>
+                <li class="nav-item"><a class="nav-link" href="CreateEvent.html">Create Event</a></li>
+            </ul>
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+
+                    <img id="navbar-profile-img" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User" width="32" height="32" class="rounded-circle me-2">
+                    <strong id="navbar-user-name">User</strong>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="AccountHome.html">Dashboard</a></li>
+                    <li><a class="dropdown-item" href="AccountMyEvents.html">My Events</a></li>
+                    <li><a class="dropdown-item" href="AccountBookings.html">My Bookings</a></li>
+                    <li><a class="dropdown-item" href="AccountProfile.html">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item logout-trigger" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<header class="page-header">
+    <div class="container text-center">
+        <h1 class="display-4">Discover Events For All The Things You Love</h1>
+        <form id="search-form" class="search-bar-wrapper mx-auto mt-4">
+            <div class="input-group">
+                <input type="text" id="search-name-input" class="form-control form-control-lg" placeholder="Search by event name...">
+                <input type="text" id="search-location-input" class="form-control form-control-lg" placeholder="Search by location...">
+                <button class="btn btn-accent" type="submit">Find Events</button>
+            </div>
+        </form>
+    </div>
+</header>
+
+
+<main class="container py-5">
+
+    <div class="filter-bar d-flex justify-content-between align-items-center mb-4">
+        <div id="date-filter-group" class="btn-group filter-pills" role="group">
+            <input type="radio" class="btn-check" name="date-filter" id="date-all" value="" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="date-all">All</label>
+
+            <input type="radio" class="btn-check" name="date-filter" id="date-today" value="today" autocomplete="off">
+            <label class="btn btn-outline-primary" for="date-today">Today</label>
+
+            <input type="radio" class="btn-check" name="date-filter" id="date-month" value="month" autocomplete="off">
+            <label class="btn btn-outline-primary" for="date-month">This Month</label>
+        </div>
+        <div class="dropdown">
+            <a class="btn btn-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" id="price-filter-label">
+                Price: All
+            </a>
+            <ul class="dropdown-menu" id="price-filter-options">
+                <li><a class="dropdown-item" href="#" data-price="">All</a></li>
+                <li><a class="dropdown-item" href="#" data-price="0">Free</a></li>
+                <li><a class="dropdown-item" href="#" data-price="10000">Under 10,000 FCFA</a></li>
+                <li><a class="dropdown-item" href="#" data-price="25000">Under 25,000 FCFA</a></li>
+                <li><a class="dropdown-item" href="#" data-price="50000">Under 50,000 FCFA</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div id="event-grid" class="row g-4">
+        <div class="col-12 text-center">
+            <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+        </div>
+    </div>
+
+
+    <nav id="pagination-nav" class="mt-5 d-none justify-content-center">
+        <ul class="pagination">
+            <li id="pagination-prev" class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo; Previous</a>
+            </li>
+
+            <ul id="pagination-numbers" class="pagination"></ul>
+
+            <li id="pagination-next" class="page-item disabled">
+                <a class="page-link" href="#">Next &raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</main>
+
+
+
+<script src="Library/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const token = localStorage.getItem('jwt_token');
+        if (!token) { window.location.href = 'SignIn.html'; return; }
+
+        // --- UPDATED: This block now loads both name and profile picture ---
+        const userName = localStorage.getItem('user_name');
+        const userProfileImgUrl = localStorage.getItem('user_profile_image_url');
+        const navbarUserName = document.getElementById('navbar-user-name');
+        const navbarProfileImg = document.getElementById('navbar-profile-img');
+
+        if (navbarUserName && userName) {
+            navbarUserName.textContent = userName;
+        }
+        if (navbarProfileImg && userProfileImgUrl) {
+            navbarProfileImg.src = userProfileImgUrl;
+        }
+        // --- END UPDATED ---
+
+        const eventGrid = document.getElementById('event-grid');
+        const searchForm = document.getElementById('search-form');
+        const searchNameInput = document.getElementById('search-name-input');
+        const searchLocationInput = document.getElementById('search-location-input');
+        const dateFilterGroup = document.getElementById('date-filter-group');
+        const priceFilterOptions = document.getElementById('price-filter-options');
+        const priceFilterLabel = document.getElementById('price-filter-label');
+
+        let currentFilters = { page: 1 };
+
+        const apiFetch = async (url, options = {}) => {
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    ...options.headers,
+                }
+            });
+            if (response.status === 401) {
+                localStorage.clear();
+                window.location.href = 'SignIn.html';
+            }
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        };
+
+        const renderEvents = (data) => {
+            eventGrid.innerHTML = '';
+            if (!data || data.length === 0) {
+                eventGrid.innerHTML = '<div class="col-12"><p class="text-center">No events match your criteria.</p></div>';
+                return;
+            }
+            data.forEach(event => {
+                const imageUrl = (event.images && event.images.length > 0)
+                    ? `http://localhost:8000/storage/${event.images[0].image_url}`
+                    : 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2070';
+
+                const eventCard = `
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 event-card">
+                <img src="${imageUrl}" class="card-img-top" alt="${event.event_name}">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">${event.event_name}</h5>
+                    <p class="card-text text-muted flex-grow-1">${event.event_desc.substring(0, 100)}...</p>
+                    <p class="mb-1"><i class="bi bi-calendar-event me-2"></i><strong>Date:</strong> ${new Date(event.event_date).toLocaleDateString()}</p>
+                    <p class="mb-1"><i class="bi bi-geo-alt-fill me-2"></i><strong>Venue:</strong> ${event.event_venue}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <span class="fw-bold fs-5">${event.event_price > 0 ? Number(event.event_price).toLocaleString('fr-FR') + ' FCFA' : 'Free'}</span>
+                    <a href="EventDetails.html?id=${event.event_id}" class="btn btn-card-details">View Details</a>
+                </div>
+            </div>
+        </div>`;
+                eventGrid.innerHTML += eventCard;
+            });
+        };
+
+        const renderPagination = (paginationData) => {
+            const paginationNav = document.getElementById('pagination-nav');
+            const pageNumbersContainer = document.getElementById('pagination-numbers');
+            const prevLink = document.getElementById('pagination-prev').querySelector('a');
+            const nextLink = document.getElementById('pagination-next').querySelector('a');
+
+            pageNumbersContainer.innerHTML = '';
+
+            if (!paginationData || paginationData.last_page <= 1) {
+                paginationNav.classList.add('d-none');
+                return;
+            }
+
+            paginationNav.classList.remove('d-none');
+
+            const createPaginationLink = (linkInfo) => {
+                const pageItem = document.createElement('li');
+                pageItem.className = `page-item ${linkInfo.active ? 'active' : ''} ${!linkInfo.url ? 'disabled' : ''}`;
+                const pageLink = document.createElement('a');
+                pageLink.className = 'page-link';
+                pageLink.href = linkInfo.url || '#';
+                pageLink.innerHTML = linkInfo.label;
+                if (linkInfo.url) {
+                    pageLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        fetchEvents(linkInfo.url);
+                    });
+                }
+                pageItem.appendChild(pageLink);
+                return pageItem;
+            };
+
+            paginationNav.innerHTML = '';
+            const paginationList = document.createElement('ul');
+            paginationList.className = 'pagination';
+
+            paginationData.links.forEach(link => {
+                paginationList.appendChild(createPaginationLink(link));
+            });
+            paginationNav.appendChild(paginationList);
+        };
+
+        const fetchEvents = (url = null) => {
+            let apiUrl = url || `/event?${new URLSearchParams(currentFilters).toString()}`;
+
+            eventGrid.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+            apiFetch(apiUrl)
+                .then(response => {
+                    renderEvents(response.data);
+                    renderPagination(response);
+                })
+                .catch(error => {
+                    console.error('Error fetching events:', error);
+                    eventGrid.innerHTML = '<p class="text-center text-danger">Failed to load events.</p>';
+                });
+        };
+
+        const applyFilters = () => {
+            currentFilters.page = 1;
+            currentFilters.name = searchNameInput.value;
+            currentFilters.location = searchLocationInput.value;
+
+            const selectedDate = document.querySelector('input[name="date-filter"]:checked');
+            if (selectedDate && selectedDate.value) {
+                currentFilters.date = selectedDate.value;
+            } else {
+                delete currentFilters.date;
+            }
+
+            fetchEvents();
+        };
+
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            applyFilters();
+        });
+
+        dateFilterGroup.addEventListener('change', applyFilters);
+
+        priceFilterOptions.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (e.target.tagName === 'A') {
+                const price = e.target.dataset.price;
+                priceFilterLabel.textContent = `Price: ${e.target.textContent}`;
+                if (price) {
+                    currentFilters.max_price = price;
+                } else {
+                    delete currentFilters.max_price;
+                }
+                applyFilters();
+            }
+        });
+
+        document.querySelectorAll('.logout-trigger').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                apiFetch('/logout', { method: 'POST' }).then(() => {
+                    localStorage.clear();
+                    window.location.href = 'SignIn.html';
+                });
+            });
+        });
+
+        fetchEvents();
+    });
+</script>
+
+</body>
+</html>
