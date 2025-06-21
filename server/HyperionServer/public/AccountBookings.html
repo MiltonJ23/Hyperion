@@ -96,6 +96,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const token = localStorage.getItem('jwt_token');
         const userId = localStorage.getItem('user_id');
+
         if (!token || !userId) {
             localStorage.clear();
             window.location.href = 'SignIn.html';
@@ -141,8 +142,6 @@
 
             bookingsTableBody.innerHTML = filteredBookings.map(booking => {
                 const imageUrl = (booking.images && booking.images.length > 0) ? `http://localhost:8000/storage/${booking.images[0].image_url}` : 'https://placehold.co/80x50/34495E/FFFFFF?text=Event';
-
-                // --- FIXED: Safely handle status and booking_id data types ---
                 const status = booking.pivot.status ? String(booking.pivot.status).replace(/^true$/i, 'Confirmed') : 'Confirmed';
                 const badgeClass = status.toLowerCase() === 'confirmed' ? 'bg-success-subtle text-success-emphasis' : 'bg-warning-subtle text-warning-emphasis';
                 const bookingId = String(booking.pivot.booking_id);

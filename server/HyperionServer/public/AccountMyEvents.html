@@ -127,18 +127,8 @@
             return;
         }
 
-        const userName = localStorage.getItem('user_name');
-        const userProfileImgUrl = localStorage.getItem('user_profile_image_url');
         const navbarUserName = document.getElementById('navbar-user-name');
         const navbarProfileImg = document.getElementById('navbar-profile-img');
-
-        if (navbarUserName && userName) {
-            navbarUserName.textContent = userName;
-        }
-        if (navbarProfileImg && userProfileImgUrl) {
-            navbarProfileImg.src = userProfileImgUrl;
-        }
-
         const statsTotalEvents = document.getElementById('stats-total-events');
         const statsTotalBookings = document.getElementById('stats-total-bookings');
         const statsTotalRevenue = document.getElementById('stats-total-revenue');
@@ -150,9 +140,28 @@
             const response = await fetch(url, { ...options, headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` } });
             if (response.status === 401) { localStorage.clear(); window.location.href = 'SignIn.html'; }
             if (!response.ok) throw new Error('Network response was not ok');
-            const contentType = response.headers.get("content-type");
-            if (contentType && contentType.indexOf("application/json") !== -1) { return response.json(); }
-            return null;
+            return response.json();
+        };
+
+        const initializeUser = async () => {
+            navbarUserName.textContent = localStorage.getItem('user_name') || 'User';
+            const storedImg = localStorage.getItem('user_profile_image_url');
+            if(storedImg) navbarProfileImg.src = storedImg;
+
+            try {
+                const user = await apiFetch(`/user/${userId}`);
+                if (user) {
+                    navbarUserName.textContent = user.name;
+                    localStorage.setItem('user_name', user.name);
+                    if(user.profile_image_url) {
+                        const fullUrl = `http://localhost:8000/storage/${user.profile_image_url}`;
+                        navbarProfileImg.src = fullUrl;
+                        localStorage.setItem('user_profile_image_url', fullUrl);
+                    }
+                }
+            } catch (error) {
+                console.error("Could not fetch user profile for navbar.", error);
+            }
         };
 
         function renderStats(events) {
@@ -167,43 +176,41 @@
             statsTotalRevenue.textContent = `${totalRevenue.toLocaleString('fr-FR')} FCFA`;
         }
 
-
         function renderBookingDetails(bookings, eventName, eventPrice) {
             bookingDetailsSection.classList.remove('d-none');
-            let content;
             if (bookings.length === 0) {
-                content = `<p class="text-muted text-center p-4">No bookings found for "${eventName}".</p>`;
-            } else {
-
-                const totalRevenue = bookings.length * parseFloat(eventPrice || 0);
-
-                const bookingList = bookings.map(booking => {
-                    const price = Number(eventPrice || 0);
-                    const status = String(booking.pivot.status || 'Confirmed').replace(/^true$/i, 'Confirmed');
-
-                    return `
-                    <div class="d-flex justify-content-between align-items-center booking-list-item">
-                        <div>
-                            <div class="fw-bold">${booking.name}</div>
-                            <div class="text-muted small">Booked on: ${new Date(booking.pivot.created_at).toLocaleString()}</div>
-                        </div>
-                        <div class="text-end">
-                            <div class="fw-bold">${price.toLocaleString('fr-FR')} FCFA</div>
-                            <div class="text-muted small">Status: <span class="badge bg-success">${status}</span></div>
-                        </div>
-                    </div>`;
-                }).join('');
-
-                content = `
-                    <h5 class="details-header mb-3">Showing bookings for: "${eventName}"</h5>
-                    <div class="list-group list-group-flush">${bookingList}</div>
-                    <hr>
-                    <div class="d-flex justify-content-between fw-bold fs-5 mt-3">
-                        <span>Total Revenue For This Event</span>
-                        <span>${totalRevenue.toLocaleString('fr-FR')} FCFA</span>
-                    </div>`;
+                bookingDetailsContainer.innerHTML = `<p class="text-muted text-center p-4">No bookings found for "${eventName}".</p>`;
+                return;
             }
-            bookingDetailsContainer.innerHTML = content;
+
+            const totalRevenue = bookings.length * parseFloat(eventPrice || 0);
+
+            const bookingList = bookings.map(booking => {
+                const price = Number(eventPrice || 0);
+                const status = (booking.pivot.status === true || String(booking.pivot.status).toLowerCase() === 'confirmed') ? 'Confirmed' : String(booking.pivot.status);
+                const badgeClass = status === 'Confirmed' ? 'bg-success' : 'bg-warning';
+
+                return `
+                <div class="d-flex justify-content-between align-items-center booking-list-item">
+                    <div>
+                        <div class="fw-bold">${booking.name}</div>
+                        <div class="text-muted small">Booked on: ${new Date(booking.pivot.created_at).toLocaleString()}</div>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold">${price.toLocaleString('fr-FR')} FCFA</div>
+                        <div class="text-muted small">Status: <span class="badge ${badgeClass}">${status}</span></div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            bookingDetailsContainer.innerHTML = `
+                <h5 class="details-header mb-3">Showing bookings for: "${eventName}"</h5>
+                <div class="list-group list-group-flush">${bookingList}</div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold fs-5 mt-3">
+                    <span>Total Revenue For This Event</span>
+                    <span>${totalRevenue.toLocaleString('fr-FR')} FCFA</span>
+                </div>`;
         }
 
         async function handleRowClick(e) {
@@ -213,14 +220,12 @@
 
             const eventId = selectedRow.dataset.eventId;
             const eventName = selectedRow.dataset.eventName;
-
             const eventPrice = selectedRow.dataset.eventPrice;
 
             bookingDetailsContainer.innerHTML = `<div class="text-center p-4"><div class="spinner-border spinner-border-sm" role="status"></div></div>`;
             bookingDetailsSection.classList.remove('d-none');
             try {
                 const bookings = await apiFetch(`/event/${eventId}/bookings`);
-                // --- FIXED: Pass the eventPrice to the render function ---
                 renderBookingDetails(bookings, eventName, eventPrice);
             } catch (error) {
                 console.error('Failed to load booking details:', error);
@@ -235,7 +240,6 @@
             }
             const tableRows = events.map(event => {
                 const imageUrl = (event.images && event.images.length > 0) ? `http://localhost:8000/storage/${event.images[0].image_url}` : 'https://placehold.co/150x100/34495E/FFFFFF?text=Event';
-                // --- FIXED: Added data-event-price attribute ---
                 return `
                 <tr class="clickable-row" data-event-id="${event.event_id}" data-event-name="${event.event_name}" data-event-price="${event.event_price}">
                     <td><div class="d-flex align-items-center"><img src="${imageUrl}" class="event-thumbnail" alt="Event Image"><a href="EventDetails.html?id=${event.event_id}" class="event-name-link">${event.event_name}</a></div></td>
@@ -243,7 +247,7 @@
                     <td>${event.booked_by_users_count || 0}</td>
                     <td>${Number(event.event_price).toLocaleString('fr-FR')} FCFA</td>
                     <td><span class="badge bg-info">${event.event_status}</span></td>
-                    <td><div class="btn-group"><a href="EventDetails.html?id=${event.event_id}" class="btn btn-sm btn-outline-secondary">View</a><a href="#" class="btn btn-sm btn-outline-secondary">Edit</a></div></td>
+                    <td><div class="btn-group"><a href="EventDetails.html?id=${event.event_id}" class="btn btn-sm btn-outline-secondary">View</a><a href="EditEvent.html?id=${event.event_id}" class="btn btn-sm btn-outline-secondary">Edit</a></div></td>
                 </tr>`;
             }).join('');
 
@@ -278,6 +282,7 @@
             });
         });
 
+        initializeUser();
         initializePage();
     });
 </script>

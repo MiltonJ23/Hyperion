@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Event - Hyperion</title>
+    <link href="Library/bootstrap-5.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="CreateEvent.css">
+</head>
+<body>
+
+<div id="notification" class="notification"></div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand nav-logo" href="HomePage.html">Hyperion</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="DiscoverEvents.html">Explore Events</a></li>
+                <li class="nav-item"><a class="nav-link" href="CreateEvent.html">Create Event</a></li>
+            </ul>
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img id="navbar-profile-img" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User" width="32" height="32" class="rounded-circle me-2">
+                    <strong id="navbar-user-name">User</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow dropdown-menu-end">
+                    <li><a class="dropdown-item" href="AccountHome.html">Dashboard</a></li>
+                    <li><a class="dropdown-item" href="AccountMyEvents.html">My Events</a></li>
+                    <li><a class="dropdown-item" href="AccountBookings.html">My Bookings</a></li>
+                    <li><a class="dropdown-item" href="AccountProfile.html">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item logout-trigger" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid" style="padding-top: 56px;">
+    <div class="row">
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link" href="AccountHome.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="AccountMyEvents.html"><i class="bi bi-star-fill me-2"></i> My Events</a></li>
+                    <li class="nav-item"><a class="nav-link" href="AccountBookings.html"><i class="bi bi-calendar-event-fill me-2"></i> My Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="AccountProfile.html"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="AccountPaymentMethods.html"><i class="bi bi-credit-card-fill me-2"></i> Payment Methods</a></li>
+                    <li class="nav-item"><a class="nav-link logout-trigger" href="#"><i class="bi bi-box-arrow-left me-2"></i> Sign Out</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Edit Event</h1>
+                <a href="AccountMyEvents.html" class="btn btn-secondary">Cancel</a>
+            </div>
+
+            <form id="edit-event-form" novalidate>
+                <div id="form-content">
+                    <div class="text-center p-5">
+                        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
+                        <p class="mt-2 text-muted">Loading Event Details...</p>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+
+<script src="Library/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const token = localStorage.getItem('jwt_token');
+        const userId = localStorage.getItem('user_id');
+
+        if (!token || !userId) {
+            window.location.href = 'SignIn.html';
+            return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('id');
+        const formContent = document.getElementById('form-content');
+        const notification = document.getElementById('notification');
+
+        if (!eventId) {
+            formContent.innerHTML = '<div class="alert alert-danger">No event ID specified.</div>';
+            return;
+        }
+
+        const apiFetch = async (url, options = {}) => {
+            const response = await fetch(url, {
+                ...options,
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+            });
+            if (response.status === 401) { localStorage.clear(); window.location.href = 'SignIn.html'; }
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) { throw new Error(data.message || `API Error: ${response.status}`); }
+            return data;
+        };
+
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            setTimeout(() => { notification.classList.remove('show'); }, 4000);
+        }
+
+        function renderForm(event) {
+            const eventDate = event.event_date ? event.event_date.split('T')[0] : '';
+
+            const eventTime = event.event_time ? String(event.event_time).substring(0, 5) : '';
+
+            formContent.innerHTML = `
+                <div class="card mb-4"><div class="card-body">
+                    <h4 class="card-title">Event Details</h4>
+                    <div class="mb-3"><label for="eventName" class="form-label">Event Name</label><input type="text" class="form-control" id="eventName" value="${event.event_name || ''}" required></div>
+                    <div class="mb-3"><label for="eventDescription" class="form-label">Event Description</label><textarea class="form-control" id="eventDescription" rows="4" required>${event.event_desc || ''}</textarea></div>
+                </div></div>
+                <div class="card mb-4"><div class="card-body">
+                    <h4 class="card-title">Location</h4>
+                    <div class="mb-3"><label for="eventVenue" class="form-label">Venue</label><input type="text" class="form-control" id="eventVenue" value="${event.event_venue || ''}" required></div>
+                    <div class="mb-3"><label for="eventLocation" class="form-label">City</label><input type="text" class="form-control" id="eventLocation" value="${event.event_location || ''}" required></div>
+                </div></div>
+                <div class="card mb-4"><div class="card-body">
+                     <h4 class="card-title">Date & Time</h4>
+                     <div class="row">
+                        <div class="col-md-6 mb-3"><label for="eventDate" class="form-label">Date</label><input type="date" class="form-control" id="eventDate" value="${eventDate}" required></div>
+                        <div class="col-md-6 mb-3"><label for="eventTime" class="form-label">Time</label><input type="time" class="form-control" id="eventTime" value="${eventTime}" required></div>
+                     </div>
+                </div></div>
+                <div class="card mb-4"><div class="card-body">
+                    <h4 class="card-title">Tickets</h4>
+                    <div class="input-group mb-3"><span class="input-group-text">FCFA</span><input type="number" class="form-control" id="eventPrice" value="${Number(event.event_price || 0).toFixed(2)}" min="0" required></div>
+                </div></div>
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" id="saveButton" class="btn btn-primary btn-lg">Save Changes</button>
+                </div>`;
+        }
+
+        async function initializePage() {
+            // ... (Initialize user navbar logic)
+            try {
+                const eventData = await apiFetch(`/event/${eventId}`);
+                if (eventData.fk_user_id !== userId) {
+                    formContent.innerHTML = '<div class="alert alert-danger">You are not authorized to edit this event.</div>';
+                    return;
+                }
+                renderForm(eventData);
+            } catch (error) {
+                formContent.innerHTML = `<div class="alert alert-danger">Could not load event details. Error: ${error.message}</div>`;
+            }
+        }
+
+        document.getElementById('edit-event-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const saveButton = document.getElementById('saveButton');
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
+
+            const updatedData = {
+                event_name: document.getElementById('eventName').value,
+                event_desc: document.getElementById('eventDescription').value,
+                event_date: document.getElementById('eventDate').value,
+                event_time: document.getElementById('eventTime').value,
+                event_venue: document.getElementById('eventVenue').value,
+                event_location: document.getElementById('eventLocation').value,
+                event_price: document.getElementById('eventPrice').value,
+            };
+
+            try {
+                await apiFetch(`/event/${eventId}`, { method: 'PUT', body: JSON.stringify(updatedData) });
+                showNotification('Event updated successfully!', 'success');
+                setTimeout(() => { window.location.href = 'AccountMyEvents.html'; }, 1500);
+            } catch (error) {
+                showNotification(`Failed to update event: ${error.message}`, 'error');
+            } finally {
+                saveButton.disabled = false;
+                saveButton.textContent = 'Save Changes';
+            }
+        });
+
+        initializePage();
+    });
+</script>
+
+</body>
+</html>
