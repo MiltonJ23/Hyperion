@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Hyperion</title>
+    <link href="../../../server/HyperionServer/public/Library/bootstrap-5.3.5-dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../Styles%20/HomePage.css">
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand nav-logo" href="../index.html">Hyperion</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="DiscoverEvents.html">Explore Events</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="CreateEvent.html">Create Event</a>
+                </li>
+            </ul>
+
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="" width="32" height="32" class="rounded-circle me-2">
+                    <strong>Fred Mike</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser">
+                    <li><a class="dropdown-item" href="AccountBookings.html">My Bookings</a></li>
+                    <li><a class="dropdown-item" href="AccountHome.html">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="../index.html">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<header class="page-header">
+    <div class="container text-center">
+        <h1 class="display-4">Discover Events For All The Things You Love</h1>
+        <div class="search-bar-wrapper mx-auto mt-4">
+            <input type="text" class="form-control form-control-lg" placeholder="Search for events, organizers, or locations...">
+            <button class="btn btn-accent"><i class="bi bi-search"></i></button>
+        </div>
+    </div>
+</header>
+
+<main class="container py-5">
+
+    <div class="row g-4">
+
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 event-card">
+                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2070" class="card-img-top" alt="Concert Event">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Jazz & Blues Festival</h5>
+                    <p class="card-text text-muted flex-grow-1">Experience an unforgettable night with the best jazz musicians from around the world.</p>
+                    <p class="mb-1"><i class="bi bi-calendar-event me-2"></i><strong>Date:</strong> Sat, Oct 25, 2025</p>
+                    <p class="mb-1"><i class="bi bi-geo-alt-fill me-2"></i><strong>Venue:</strong> Palais des Congrès, Yaoundé</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <span class="fw-bold fs-5">15,000 FCFA</span>
+                    <a href="EventDetails.html" class="btn btn-card-details">View Details</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 event-card">
+                <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=2070" class="card-img-top" alt="Tech Conference">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Africa Tech Summit 2025</h5>
+                    <p class="card-text text-muted flex-grow-1">Join industry leaders to discuss the future of technology and innovation in Africa.</p>
+                    <p class="mb-1"><i class="bi bi-calendar-event me-2"></i><strong>Date:</strong> Wed, Nov 12, 2025</p>
+                    <p class="mb-1"><i class="bi bi-geo-alt-fill me-2"></i><strong>Venue:</strong> Hilton Hotel, Yaoundé</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <span class="fw-bold fs-5">45,000 FCFA</span>
+                    <a href="EventDetails.html" class="btn btn-card-details">View Details</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 event-card">
+                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070" class="card-img-top" alt="Art Exhibition">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Contemporary Art Expo</h5>
+                    <p class="card-text text-muted flex-grow-1">A curated exhibition of groundbreaking work from Cameroon's leading contemporary artists.</p>
+                    <p class="mb-1"><i class="bi bi-calendar-event me-2"></i><strong>Date:</strong> Fri, Dec 05, 2025</p>
+                    <p class="mb-1"><i class="bi bi-geo-alt-fill me-2"></i><strong>Venue:</strong> National Museum, Yaoundé</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <span class="fw-bold fs-5 text-success">Free Entry</span>
+                    <a href="EventDetails.html" class="btn btn-card-details">View Details</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+
+<script src="../../../server/HyperionServer/public/Library/bootstrap-5.3.5-dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

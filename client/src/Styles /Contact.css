@@ -1,0 +1,166 @@
+
+:root {
+    --color-primary: #34495E; /* Slate Blue */
+    --color-secondary-blue: #7393B3; /* Fog Blue */
+    --color-accent: #F5F5DC; /* Warm Linen */
+    --color-background: #FAFAFA; /* Alabaster */
+    --color-text-primary: #2C3E50; /* Gunmetal */
+    --color-text-secondary: #8D99AE; /* Sterling */
+    --color-white: #FFFFFF;
+}
+
+/* ==== General Body & Font Styling ==== */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    padding-top: 70px; /* Offset for fixed navbar */
+}
+
+h1, h2, h3, .nav-logo {
+    font-weight: 700;
+}
+
+section {
+    padding: 5rem 0;
+}
+
+/* ==== Navbar Customization ==== */
+.navbar {
+    background-color: var(--color-primary) !important;
+}
+.nav-logo {
+    font-size: 1.8rem;
+}
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+}
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--color-white);
+}
+.btn-accent {
+    --bs-btn-bg: var(--color-accent);
+    --bs-btn-border-color: var(--color-accent);
+    --bs-btn-color: var(--color-text-primary);
+    --bs-btn-hover-bg: #E0DBC5;
+    --bs-btn-hover-border-color: #E0DBC5;
+    --bs-btn-hover-color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.btn-accent {
+    --bs-btn-bg: var(--color-accent);
+    --bs-btn-border-color: var(--color-accent);
+    --bs-btn-color: var(--color-text-primary);
+    --bs-btn-hover-bg: #E0DBC5; /* Darker Warm Linen */
+    --bs-btn-hover-border-color: #E0DBC5;
+    --bs-btn-hover-color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+/* Secondary Action Button (Sign In) - Add this new rule */
+.btn-outline-accent {
+    --bs-btn-color: var(--color-accent);
+    --bs-btn-border-color: var(--color-accent);
+    --bs-btn-hover-bg: var(--color-accent);
+    --bs-btn-hover-border-color: var(--color-accent);
+    --bs-btn-hover-color: var(--color-text-primary);
+    --bs-btn-active-bg: #E0DBC5;
+    --bs-btn-active-border-color: #E0DBC5;
+    --bs-btn-active-color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+/* ==== Contact Hero Section ==== */
+.contact-hero {
+    background-color: var(--color-background);
+    padding: 4rem 0;
+}
+.contact-hero .lead {
+    max-width: 650px;
+    margin: 0 auto;
+    color: var(--color-text-secondary);
+}
+
+/* ==== Main Contact Section ==== */
+.contact-section {
+    padding-top: 0;
+}
+.contact-wrapper {
+    box-shadow: 0 15px 40px rgba(44, 62, 80, 0.15);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* Left Panel: Contact Info */
+.contact-info-panel {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: 3rem;
+    height: 100%;
+}
+.contact-info-panel h3 {
+    color: var(--color-white);
+}
+.contact-info-panel p {
+    color: var(--color-text-secondary);
+}
+.contact-info-panel ul li {
+    font-size: 1rem;
+    font-weight: 500;
+}
+.contact-info-panel .bi {
+    font-size: 1.5rem;
+    color: var(--color-accent);
+}
+.social-links-footer a {
+    color: var(--color-secondary-blue);
+    text-decoration: none;
+    font-size: 1.5rem;
+    margin-right: 1.5rem;
+    transition: color 0.3s ease;
+}
+.social-links-footer a:hover {
+    color: var(--color-white);
+}
+
+
+/* Right Panel: Contact Form */
+.contact-form-wrapper {
+    padding: 3rem;
+    background-color: var(--color-white);
+}
+.form-control {
+    border: 1px solid #ddd;
+    padding: 0.8rem 1rem;
+}
+.form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.25rem rgba(52, 73, 94, 0.2);
+}
+
+/* Custom Bootstrap Button */
+.btn-primary {
+    --bs-btn-bg: var(--color-primary);
+    --bs-btn-border-color: var(--color-primary);
+    --bs-btn-hover-bg: var(--color-text-primary); /* Gunmetal */
+    --bs-btn-hover-border-color: var(--color-text-primary);
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+}
+
+/* ==== Footer ==== */
+.footer-section {
+    background-color: var(--color-text-primary);
+    color: var(--color-background);
+    text-align: center;
+    padding: 4rem 0 2rem 0;
+}
+.footer-content p {
+    color: var(--color-text-secondary);
+}
+.footer-bottom {
+    border-top: 1px solid var(--color-primary);
+}

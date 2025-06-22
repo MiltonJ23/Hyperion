@@ -1,0 +1,92 @@
+
+:root {
+    --color-primary: #34495E;
+    --color-secondary-blue: #7393B3;
+    --color-accent: #F5F5DC;
+    --color-background: #FAFAFA;
+    --color-text-primary: #2C3E50;
+    --color-text-secondary: #8D99AE;
+    --color-white: #FFFFFF;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+}
+
+
+.navbar {
+    background-color: var(--color-primary) !important;
+}
+.nav-logo { font-size: 1.8rem; font-weight: 700; }
+
+
+.event-image-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.event-banner-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+.event-header .lead {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.event-info-section .section-title {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+.event-info-section p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #444;
+}
+.event-info-section .bi {
+    color: var(--color-secondary-blue);
+    font-size: 1.2rem;
+}
+
+
+.action-panel {
+    position: sticky;
+    top: 100px;
+}
+
+#cart-summary .card-title {
+    font-weight: 600;
+}
+#cart-summary .cart-item .fw-bold {
+    font-size: 0.95rem;
+}
+#cart-summary .cart-item button {
+    border: none;
+    font-weight: bold;
+}
+#cart-summary #cart-total {
+    font-size: 1.1rem;
+}
+
+
+.btn-primary {
+    --bs-btn-bg: var(--color-primary);
+    --bs-btn-border-color: var(--color-primary);
+    --bs-btn-hover-bg: var(--color-text-primary);
+    --bs-btn-hover-border-color: var(--color-text-primary);
+    font-weight: 600;
+}
+.btn-accent {
+    --bs-btn-bg: var(--color-accent);
+    --bs-btn-border-color: var(--color-accent);
+    --bs-btn-color: var(--color-text-primary);
+    font-weight: 600;
+}
+.btn-accent:hover {
+    --bs-btn-bg: #E0DBC5;
+    --bs-btn-border-color: #E0DBC5;
+}

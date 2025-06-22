@@ -1,0 +1,150 @@
+/* ==== General Setup & Variables ==== */
+:root {
+    --color-primary: #34495E; /* Slate Blue */
+    --color-secondary-blue: #7393B3; /* Fog Blue */
+    --color-accent: #F5F5DC; /* Warm Linen */
+    --color-background: #FAFAFA; /* Alabaster */
+    --color-text-primary: #2C3E50; /* Gunmetal */
+    --color-text-secondary: #8D99AE; /* Sterling */
+    --color-white: #FFFFFF;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    padding-top: 70px; /* Offset for fixed navbar */
+}
+
+/* ==== Navbar Customization (Consistent with other pages) ==== */
+.navbar {
+    background-color: var(--color-primary) !important;
+}
+.nav-logo { font-size: 1.8rem; font-weight: 700; }
+.navbar-dark .navbar-nav .nav-link { font-weight: 500; color: rgba(255, 255, 255, 0.7); }
+.navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link.active { color: var(--color-white); }
+.dropdown-menu { border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+.btn-accent {
+    --bs-btn-bg: var(--color-accent);
+    --bs-btn-border-color: var(--color-accent);
+    --bs-btn-color: var(--color-text-primary);
+    font-weight: 600;
+}
+.btn-accent:hover { --bs-btn-bg: #E0DBC5; --bs-btn-border-color: #E0DBC5; }
+
+
+/* ==== Page Header & Search Bar ==== */
+.page-header {
+    background-color: var(--color-white);
+    padding: 4rem 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+.page-header h1 {
+    color: var(--color-text-primary);
+    font-size: 2.5rem;
+}
+.search-bar-wrapper {
+    max-width: 700px;
+}
+.search-bar-wrapper .input-group .form-control {
+    border-color: #ddd;
+    padding: 0.8rem 1.2rem;
+}
+.search-bar-wrapper .input-group .form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.25rem rgba(52, 73, 94, 0.15);
+    z-index: 3;
+}
+
+/* ==== Filter Bar ==== */
+.filter-pills .btn-outline-primary {
+    --bs-btn-color: var(--color-primary);
+    --bs-btn-border-color: var(--color-primary);
+    --bs-btn-hover-bg: var(--color-primary);
+    --bs-btn-hover-color: var(--color-white);
+    --bs-btn-active-bg: var(--color-primary);
+    --bs-btn-active-color: var(--color-white);
+    font-weight: 500;
+}
+
+.dropdown-toggle {
+    font-weight: 500;
+}
+
+/* ==== Event Card Styling (Consistent with home.css) ==== */
+.event-card {
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(44, 62, 80, 0.1);
+}
+.event-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.event-card .card-title {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+.event-card .card-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+.event-card .card-body p i {
+    color: var(--color-secondary-blue);
+}
+.event-card .card-footer {
+    background-color: transparent;
+    border-top: 1px solid #f0f0f0;
+}
+
+.btn-card-details {
+    --bs-btn-color: var(--color-primary); /* Text color: Slate Blue */
+    --bs-btn-border-color: #e0e0e0; /* A light, subtle border */
+    --bs-btn-hover-bg: var(--color-primary); /* On hover, fill with Slate Blue */
+    --bs-btn-hover-border-color: var(--color-primary);
+    --bs-btn-hover-color: var(--color-white);
+    --bs-btn-active-bg: var(--color-text-primary); /* Darker Gunmetal on click */
+    --bs-btn-active-border-color: var(--color-text-primary);
+    font-weight: 600;
+}
+.pagination .page-link {
+    color: var(--color-primary);
+    background-color: var(--color-white);
+    border: 1px solid #dee2e6;
+    margin: 0 4px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.pagination .page-link:hover {
+    background-color: #f8f9fa;
+    color: var(--color-text-primary);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+
+.pagination .page-item.active .page-link {
+    z-index: 3;
+    color: var(--color-white);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    box-shadow: 0 5px 15px rgba(52, 73, 94, 0.3);
+}
+
+.pagination .page-item.disabled .page-link {
+    color: var(--color-text-secondary);
+    pointer-events: none;
+    background-color: var(--color-white);
+    border-color: #dee2e6;
+    box-shadow: none;
+}

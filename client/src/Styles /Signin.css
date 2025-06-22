@@ -1,0 +1,214 @@
+/* ==== General Setup & Variables ==== */
+:root {
+    --color-primary: #34495E; /* Slate Blue */
+    --color-secondary-blue: #7393B3; /* Fog Blue */
+    --color-accent: #F5F5DC; /* Warm Linen */
+    --color-background: #FFFFFF;
+    --color-light-bg: #FAFAFA; /* Alabaster */
+    --color-text-primary: #2C3E50; /* Gunmetal */
+    --color-text-secondary: #8D99AE; /* Sterling */
+    --color-white: #FFFFFF;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--color-light-bg);
+}
+
+/* ==== Main Container ==== */
+.signin-container {
+    min-height: 100vh;
+}
+
+/* ==== Left Branding Panel ==== */
+.branding-panel {
+    background: linear-gradient(rgba(52, 73, 94, 0.9), rgba(44, 62, 80, 0.95)), url('https://images.unsplash.com/photo-1519791883288-dc81ce25f433?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920');
+    background-size: cover;
+    background-position: center;
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+}
+
+.branding-content {
+    max-width: 450px;
+}
+
+.nav-logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-white);
+    text-decoration: none;
+}
+.form-panel .nav-logo {
+    color: var(--color-primary);
+}
+
+.branding-content h2 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+}
+
+.branding-content p {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+}
+
+.testimonial-quote {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 4px solid var(--color-accent);
+}
+
+.testimonial-quote .bi-quote {
+    font-size: 2rem;
+    color: var(--color-accent);
+}
+
+.testimonial-quote p {
+    font-style: italic;
+    color: #f0f0f0;
+    margin-top: 0.5rem;
+}
+
+.testimonial-quote cite {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+/* ==== Right Form Panel ==== */
+.form-panel {
+    background-color: var(--color-background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.form-content {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-title {
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.form-subtitle {
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
+}
+
+.form-control {
+    padding: 0.9rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.25rem rgba(52, 73, 94, 0.2);
+}
+
+.form-check-label, .forgot-password-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.forgot-password-link, .signup-link {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+.forgot-password-link:hover, .signup-link:hover {
+    text-decoration: underline;
+}
+
+.or-divider {
+    text-align: center;
+    margin: 2rem 0;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+}
+.or-divider::before, .or-divider::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    background: #e0e0e0;
+}
+.or-divider span {
+    padding: 0 1rem;
+    font-weight: 500;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--color-primary);
+    --bs-btn-border-color: var(--color-primary);
+    --bs-btn-hover-bg: var(--color-text-primary);
+    --bs-btn-hover-border-color: var(--color-text-primary);
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+}
+
+.btn-outline-dark {
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    border-color: #e0e0e0;
+}
+.btn-outline-dark:hover {
+    background-color: var(--color-light-bg);
+    border-color: #ccc;
+}
+
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+    transform: translateY(-20px);
+}
+.toast-notification.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 1050;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification.success {
+    background-color: #28a745; /* Green */
+}
+
+.notification.error {
+    background-color: #dc3545; /* Red */
+}
