@@ -1,0 +1,167 @@
+---
+# 1. STOCKAGE POUR LA BASE DE DONNÉES
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+# 2. SERVICE ET DÉPLOIEMENT MYSQL
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hyperion-db
+spec:
+  selector:
+    matchLabels:
+      app: hyperion-db
+  template:
+    metadata:
+      labels:
+        app: hyperion-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_DATABASE
+          value: "Hyperion"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "afterlife"
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hyperion-db-service
+spec:
+  selector:
+    app: hyperion-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+
+---
+# 3. DÉPLOIEMENT DE L'APPLICATION LARAVEL
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hyperion-booking-app
+spec:
+  replicas: 2 # On commence avec 2 pods pour la haute disponibilité
+  selector:
+    matchLabels:
+      app: hyperion-booking-app
+  template:
+    metadata:
+      labels:
+        app: hyperion-booking-app
+    spec:
+      containers:
+      - name: hyperion-booking-app
+        image: miltonj23/hyperion-booking-app:v1.0 # TON IMAGE DOCKER HUB
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DB_HOST
+          value: "hyperion-db-service"
+        - name: DB_DATABASE
+          value: "Hyperion"
+        - name: DB_USERNAME
+          value: "root"
+        - name: DB_PASSWORD
+          value: "afterlife"
+        # HEALTH CHECKS (Sondes de santé)
+        livenessProbe:
+          httpGet:
+            path: /api/events # Une route simple qui répond 200
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/events
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        # RESSOURCES (Requis pour le HPA)
+        resources:
+          limits:
+            cpu: "500m"
+          requests:
+            cpu: "200m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hyperion-booking-app-service
+spec:
+  selector:
+    app: hyperion-booking-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hyperion-ingress
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.certresolver: "myresolver"
+spec:
+  tls:
+  - hosts:
+    - hyperion.io
+    secretName: hyperion-tls-cert
+  rules:
+  - host: hyperion.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hyperion-booking-app-service
+            port:
+              number: 80
+
+---
+# 5. HPA (AUTOSCALING)
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hyperion-app-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hyperion-booking-app
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50 # Si CPU > 50%, on crée de nouveaux pods
