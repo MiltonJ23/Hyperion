@@ -1,0 +1,28 @@
+---
+- name: Déploiement de l'application Hyperion sur K3s
+  hosts: production
+  become: yes # Obligatoire pour utiliser kubectl avec la configuration par défaut de K3s
+  
+  tasks:
+    - name: 1. Copier le manifeste Kubernetes vers le VPS
+      ansible.builtin.copy:
+        src: ./deployment.yaml
+        dest: /tmp/hyperion-deployment.yaml
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: 2. Appliquer le manifeste sur le cluster K3s
+      ansible.builtin.command: kubectl apply -f /tmp/hyperion-deployment.yaml
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: kubectl_result
+
+    - name: 3. Afficher le résultat de la commande kubectl
+      ansible.builtin.debug:
+        var: kubectl_result.stdout_lines
+
+    - name: 4. Attendre que les pods de l'application démarrent
+      ansible.builtin.command: kubectl rollout status deployment/hyperion-booking-app --timeout=300s
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
