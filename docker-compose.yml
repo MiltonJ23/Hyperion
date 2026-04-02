@@ -1,14 +1,10 @@
 services:
   app:
-    image: bitnami/laravel:latest
-    user : root
-    container_name: hyperion_app
+    image: miltonj23/hyperion-booking-app:v1.0
+    container_name: hyperion_booking_app
     restart: unless-stopped
-    working_dir: /app
     ports:
       - "8000:8000"
-    volumes:
-      - ./server/HyperionServer:/app
     environment:
       - DB_HOST=db
       - DB_DATABASE=Hyperion
