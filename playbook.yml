@@ -1,0 +1,75 @@
+---
+- name: Configuration du VPS Hyperion (Tailscale, UFW, K3s, Traefik)
+  hosts: production
+  become: yes 
+  vars:
+    tailscale_authkey: "********************************" 
+    email_letsencrypt: "********************"
+
+  tasks:
+    - name: Mettre à jour les paquets du système
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Installer UFW
+      apt:
+        name: ufw
+        state: present
+
+    - name: Autoriser SSH (Pour qu'Ansible ne se bloque pas)
+      ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: Autoriser HTTP (80)
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+
+    - name: Autoriser HTTPS (443)
+      ufw:
+        rule: allow
+        port: '443'
+        proto: tcp
+
+    - name: Autoriser tout le trafic provenant de Tailscale
+      ufw:
+        rule: allow
+        interface: tailscale0
+        direction: in
+
+    - name: Activer UFW
+      ufw:
+        state: enabled
+
+    - name: Télécharger le script d'installation Tailscale
+      shell: curl -fsSL https://tailscale.com/install.sh | sh
+
+    - name: Connecter la machine à Tailscale
+      command: tailscale up --authkey={{ tailscale_authkey }}
+      ignore_errors: yes 
+
+    - name: Installer K3s (Léger Kubernetes)
+      shell: curl -sfL https://get.k3s.io | sh -
+
+    - name: Attendre que K3s soit prêt
+      pause:
+        seconds: 15
+
+    - name: Configurer Traefik pour Let's Encrypt (HelmChartConfig K3s)
+      copy:
+        dest: /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
+        content: |
+          apiVersion: helm.cattle.io/v1
+          kind: HelmChartConfig
+          metadata:
+            name: traefik
+            namespace: kube-system
+          spec:
+            valuesContent: |-
+              additionalArguments:
+                - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+                - "--certificatesresolvers.myresolver.acme.email={{ email_letsencrypt }}"
+                - "--certificatesresolvers.myresolver.acme.storage=/data/acme.json"
