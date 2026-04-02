@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Carbon;
 
 class EventController extends Controller
 {
@@ -19,6 +19,7 @@ class EventController extends Controller
 
         $query = Event::query()->with('user','images');
 
+        $query->whereDate('event_date', '>=', Carbon::today());
 
         if ($request->has('name')) {
             $query->where('event_name', 'like', '%' . $request->input('name') . '%');
@@ -211,6 +212,11 @@ class EventController extends Controller
         }
 
         $event = Event::findOrFail($id);
+
+        if (Carbon::parse($event->event_date)->isBefore(Carbon::today())) {
+            return response()->json(['message' => 'Not able to book an expired event.'], 400);
+        }
+
         $event->bookedByUsers()->attach($user->user_id, [
             'status' => 'Confirmed',
             'price_at_booking' => $event->event_price,
