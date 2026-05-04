@@ -1,17 +1,72 @@
+# Hyperion
 
-<h1 align="center" id="title">Hyperion</h1>
+Hyperion is an event booking web application. Users can discover events, book tickets, and manage their account. Organizers can create and manage their own events. The project covers the full lifecycle from local development to production deployment on a VPS.
 
-<p align="center"><img src="https://github.com/MiltonJ23/Hyperion/blob/Sonoma/hyperion.webp" alt="project-image"></p>
+## Stack
 
-<p id="description">Hyperion is an event booking web application built in laravel. The purpose of the project is to propose the whole web application streamline process from development to production. For that the project use ansible as its configuration tool to configure and deploy on the VPS.</p>
+| Layer | Technology |
+|---|---|
+| Backend | Laravel 12 (PHP 8.2+), JWT authentication |
+| Frontend | Static HTML, Bootstrap 5, CSS |
+| Database | MySQL 8 |
+| Containerization | Docker, Docker Compose |
+| Orchestration | Kubernetes (K3s), Traefik ingress, Let's Encrypt TLS |
+| Infrastructure automation | Ansible |
+| Networking | Tailscale, UFW |
 
+## Repository layout
 
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Docker Compose](https://img.shields.io/badge/Docker%20Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Ansible](https://img.shields.io/badge/Ansible-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
-![Multipass](https://img.shields.io/badge/Multipass-E95420?style=for-the-badge&logo=canonical&logoColor=white)
-![Tailscale](https://img.shields.io/badge/Tailscale-000000?style=for-the-badge&logo=tailscale&logoColor=white) 
-![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+```
+.
+├── client/                  Static frontend (HTML/CSS/Bootstrap)
+│   └── src/
+│       ├── index.html       Landing page
+│       └── Components/      Application views (SignIn, SignUp, Events, ...)
+├── server/
+│   └── HyperionServer/      Laravel application
+│       ├── app/
+│       │   ├── Http/        Controllers, Middleware
+│       │   └── Models/      Eloquent models
+│       └── routes/web.php   API route definitions
+├── Schemas.sql              Database DDL (reference schema)
+├── Dockerfile               Application image build
+├── docker-compose.yml       Local stack (app + MySQL)
+├── deployment.yaml          Kubernetes manifests
+├── playbook.yml             Ansible VPS provisioning
+├── deploy-app.yml           Ansible application deployment
+├── hosts.ini                Ansible inventory (template)
+└── docs/                    Extended documentation (wiki)
+```
+
+## Quick start
+
+See [docs/development.md](docs/development.md) for the full local development setup.
+
+**Minimum requirements:** Docker, Docker Compose.
+
+```bash
+cp server/HyperionServer/.env.example server/HyperionServer/.env
+# Edit .env: set DB_CONNECTION=mysql, DB_HOST=db, DB_DATABASE=Hyperion, DB_USERNAME=root, DB_PASSWORD=<password>
+docker compose up -d
+```
+
+The application is available at `http://localhost:8000`.
+
+## Production deployment
+
+Deployment targets a VPS running K3s. Two Ansible playbooks handle the full process:
+
+1. `playbook.yml` — provisions the VPS (UFW, Tailscale, K3s, Traefik with Let's Encrypt).
+2. `deploy-app.yml` — pushes the Kubernetes manifests and waits for the rollout.
+
+See [docs/deployment.md](docs/deployment.md) for the complete procedure.
+
+## Documentation
+
+| Document | Contents |
+|---|---|
+| [docs/architecture.md](docs/architecture.md) | System architecture and component interactions |
+| [docs/api.md](docs/api.md) | Full API reference |
+| [docs/database.md](docs/database.md) | Database schema and entity relationships |
+| [docs/deployment.md](docs/deployment.md) | Docker, Kubernetes, and Ansible deployment guide |
+| [docs/development.md](docs/development.md) | Local development setup |
